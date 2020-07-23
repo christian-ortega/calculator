@@ -1,10 +1,107 @@
+:root {
+    --calculator-height: 385px;
+    --calculator-width: 330px;
+}
+
+html {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #eeeeee;
+}
+
+h1 {
+    margin-bottom: 0px;
+}
+
+#author {
+    margin-top: 4px;
+    margin-bottom: 18px;
+    margin-left: 1px;
+}
+
+button, #padding-div {
+    background-color: #b3e5fc;
+    border: 1px solid #212121;
+    border-radius: 3px;
+    font-size: 16px;
+    height: calc(var(--calculator-width) / 6);
+    width: calc(var(--calculator-width) / 6);
+}
+
+button:hover {
+    background-color: #e1f5fe;
+}
+
+.operator-button {
+    background-color: #b2dfdb;
+}
+
+.operator-button:hover {
+    background-color: #e0f2f1;
+}
+
+#clear-button, #delete-button {
+    background-color: #ef9a9a;
+}
+
+#clear-button:hover, #delete-button:hover {
+    background-color: #ffcdd2;
+}
+
+#equal-button {
+    height: 128px;
+    background-color: #ffab91;
+}
+
+#equal-button:hover {
+    background-color: #ffccbc;
+}
+
 #calculator-container {
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+
+    height: var(--calculator-height);
+    width: var(--calculator-width);
+    padding: 10px 10px 30px 10px;
+    background-color: #fafafa;
+    border: 1px solid #212121;
+    border-radius: 10px;
+    box-shadow: 10px 10px 5px grey;
 }
 
-#line-container {
+.line-container {
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
+    
+    width: calc(var(--calculator-width) - 10px);
+    max-height: calc(var(--calculator-width) / 6);
+}
+
+#last-line-container {
+    align-self: start;
+    
+    width: 254px;
+    margin-left: 5px;
+}
+
+#display {
+    height: 45px;
+    line-height: 45px;
+    text-align: right;
+    font-size: 24px;
+    
+    width: calc(var(--calculator-width) - 10px);
+    background-color: #4fc3f7;
+    border: 1px solid #212121;
+    border-radius: 3px;
+}
+
+#padding-div {
+    visibility: hidden;
+    align-self: flex-end;
+    height: 1px;
 }
 

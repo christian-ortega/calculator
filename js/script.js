@@ -99,9 +99,15 @@ operatorButtons.forEach(button => {
 });
 
 equalButton.addEventListener("click", () => {
+    let edgeCase = false;
     if(currentOperator == "")
         return;
     if(zerothNumber !== null) {
+        if(isOperatorClicked) {
+            firstNumber = operate(firstNumber, firstNumber, currentOperator);
+            isOperatorClicked = false;
+            edgeCase = true;
+        }
         if(zerothOperator == "-")
             firstNumber = operate(zerothNumber, firstNumber, zerothOperator);
         else
@@ -109,7 +115,10 @@ equalButton.addEventListener("click", () => {
         zerothNumber = null;
         zerothOperator = null;
     }
-    firstNumber = operate(firstNumber, operand, currentOperator);
+    if(isOperatorClicked)
+        firstNumber = operate(firstNumber, firstNumber, currentOperator);
+    else if(!edgeCase)
+        firstNumber = operate(firstNumber, operand, currentOperator);
     updateDisplay(firstNumber);
     isOperatorClicked = false;
     isEqualClicked = true;

@@ -1,6 +1,7 @@
 const numberButtons = document.querySelectorAll(".number-button");
 const operatorButtons = document.querySelectorAll(".operator-button");
 const equalButton = document.querySelector("#equal-button");
+const clearButton = document.querySelector("#clear-button");
 const display = document.querySelector("#display");
 
 let currentOperator = "";
@@ -26,19 +27,23 @@ function operate(a, b, operator) {
         return divide(a, b);
 }
 
+function updateDisplay(str) {
+    display.innerHTML = str;
+}
+
 numberButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         const numberThatWasClicked = e.target.innerHTML;
         let currentNumberOnDisplay = display.innerHTML;
         if(isOperatorClicked) {
             firstNumber = display.innerHTML;
-            display.innerHTML = numberThatWasClicked;
+            updateDisplay(numberThatWasClicked);
             isOperatorClicked = false;
         }
         else if(currentNumberOnDisplay == "0")
-            display.innerHTML = numberThatWasClicked;
+            updateDisplay(numberThatWasClicked);
         else {
-            display.innerHTML = currentNumberOnDisplay + numberThatWasClicked;
+            updateDisplay(currentNumberOnDisplay + numberThatWasClicked);
         }
     });
 });
@@ -50,7 +55,13 @@ operatorButtons.forEach(button => {
     });
 });
 
-equalButton.addEventListener("click", (e) => {
-    display.innerHTML = operate(firstNumber, display.innerHTML, currentOperator);
+equalButton.addEventListener("click", () => {
+    updateDisplay(operate(firstNumber, display.innerHTML, currentOperator));
 });
 
+clearButton.addEventListener("click", () => {
+    currentOperator = "";
+    isOperatorClicked = false;
+    firstNumber = 0;
+    updateDisplay(0);
+})

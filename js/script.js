@@ -6,7 +6,11 @@ const display = document.querySelector("#display");
 
 let currentOperator = "";
 let isOperatorClicked = false;
+let isEqualClicked = false;
 let firstNumber = 0;
+let operand = 0;
+let zerothNumber = null;
+let zerothOperator = null;
 
 function add(a, b) { return Number(a) + Number(b);}
 
@@ -35,33 +39,89 @@ numberButtons.forEach(button => {
     button.addEventListener("click", (e) => {
         const numberThatWasClicked = e.target.innerHTML;
         let currentNumberOnDisplay = display.innerHTML;
-        if(isOperatorClicked) {
+        if(isEqualClicked) {
+            updateDisplay(numberThatWasClicked);
+            firstNumber = display.innerHTML;
+            currentOperator = "";
+            isEqualClicked = false;
+        }
+        else if(isOperatorClicked) {
             firstNumber = display.innerHTML;
             updateDisplay(numberThatWasClicked);
+            operand = numberThatWasClicked;
             isOperatorClicked = false;
         }
-        else if(currentNumberOnDisplay == "0")
-            updateDisplay(numberThatWasClicked);
+        else if(currentNumberOnDisplay == "0") {
+            operand = numberThatWasClicked;
+            updateDisplay(operand);
+            firstNumber = display.innerHTML;
+        }
         else {
-            updateDisplay(currentNumberOnDisplay + numberThatWasClicked);
+            operand = currentNumberOnDisplay + numberThatWasClicked;
+            updateDisplay(operand);
         }
     });
 });
 
 operatorButtons.forEach(button => {
-    button.addEventListener("click", (e) => {
+    button.addEventListener("click", (e) => {        
+        let lastOperator = currentOperator;
         currentOperator = e.target.innerHTML;
+        if(!isEqualClicked && !isOperatorClicked) {
+            if(((currentOperator == "+" || currentOperator == "-") && (lastOperator == "+" || lastOperator == "-"))
+                    || ((currentOperator == "+" || currentOperator == "-") && (lastOperator == "×" || lastOperator == "÷"))) {
+                firstNumber = operate(firstNumber, operand, lastOperator);
+                if(zerothNumber !== null) {
+                    if(zerothOperator == "-")
+                        firstNumber = operate(zerothNumber, firstNumber, zerothOperator);
+                    else
+                        firstNumber = operate(firstNumber, zerothNumber, zerothOperator);
+                    zerothNumber = null;
+                    zerothOperator = null;
+                }
+                updateDisplay(firstNumber);
+            }
+            else if((currentOperator == "×" || currentOperator == "÷") && (lastOperator == "×" || lastOperator == "÷")) {
+                firstNumber = operate(firstNumber, operand, lastOperator);
+                updateDisplay(firstNumber);
+            }
+            else if((currentOperator == "×" || currentOperator == "÷") && (lastOperator == "+" || lastOperator == "-")) {
+                zerothNumber = firstNumber;
+                zerothOperator = lastOperator;
+            
+                firstNumber = display.innerHTML;
+            }
+        }
+        operand = display.innerHTML;
         isOperatorClicked = true;
+        isEqualClicked = false;
     });
 });
 
 equalButton.addEventListener("click", () => {
-    updateDisplay(operate(firstNumber, display.innerHTML, currentOperator));
+    if(currentOperator == "")
+        return;
+    if(zerothNumber !== null) {
+        if(zerothOperator == "-")
+            firstNumber = operate(zerothNumber, firstNumber, zerothOperator);
+        else
+            firstNumber = operate(firstNumber, zerothNumber, zerothOperator);
+        zerothNumber = null;
+        zerothOperator = null;
+    }
+    firstNumber = operate(firstNumber, operand, currentOperator);
+    updateDisplay(firstNumber);
+    isOperatorClicked = false;
+    isEqualClicked = true;
 });
 
 clearButton.addEventListener("click", () => {
     currentOperator = "";
     isOperatorClicked = false;
+    isEqualClicked = false;
     firstNumber = 0;
+    operand = 0;
+    zerothNumber = null;
+    zerothOperator = null;
     updateDisplay(0);
 })

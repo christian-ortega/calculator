@@ -1,5 +1,6 @@
 const numberButtons = document.querySelectorAll(".number-button");
 const decimalButton = document.querySelector("#decimal-button");
+const signButton = document.querySelector("#sign-button");
 const operatorButtons = document.querySelectorAll(".operator-button");
 const equalButton = document.querySelector("#equal-button");
 const clearButton = document.querySelector("#clear-button");
@@ -7,6 +8,7 @@ const display = document.querySelector("#display");
 
 let currentOperator = "";
 let isOperatorClicked = false;
+let isOperatorChain = false;
 let isEqualClicked = false;
 let firstNumber = 0;
 let operand = 0;
@@ -52,8 +54,12 @@ numberButtons.forEach(button => {
             operand = numberThatWasClicked;
             isOperatorClicked = false;
         }
-        else if(currentNumberOnDisplay == "0") {
-            operand = numberThatWasClicked;
+        else if(isOperatorChain && (currentNumberOnDisplay == "0" || currentNumberOnDisplay == "-0")) {
+            operand = currentNumberOnDisplay.replace("0", numberThatWasClicked);
+            updateDisplay(operand);
+        }
+        else if(currentNumberOnDisplay == "0" || currentNumberOnDisplay == "-0") {
+            operand = currentNumberOnDisplay.replace("0", numberThatWasClicked);
             updateDisplay(operand);
             firstNumber = display.innerHTML;
         }
@@ -78,13 +84,51 @@ decimalButton.addEventListener("click", () => {
         operand = "0.";
         isOperatorClicked = false;
     }
-    else if(currentNumberOnDisplay == "0") {
-        operand = "0.";
+    else if(isOperatorChain && (currentNumberOnDisplay == "0" || currentNumberOnDisplay == "-0")) {
+        operand = currentNumberOnDisplay + ".";
+        updateDisplay(operand);
+    }
+    else if(currentNumberOnDisplay == "0" || currentNumberOnDisplay == "-0") {
+        operand = currentNumberOnDisplay + ".";
         updateDisplay(operand);
         firstNumber = display.innerHTML;
     }
     else if(!currentNumberOnDisplay.includes(".")){
         operand = currentNumberOnDisplay + ".";
+        updateDisplay(operand);
+    }
+});
+
+signButton.addEventListener("click", () => {
+    let currentNumberOnDisplay = display.innerHTML;
+    if(isEqualClicked) {
+        if(currentNumberOnDisplay.includes("-"))
+            updateDisplay(currentNumberOnDisplay.replace("-",""));
+        else
+            updateDisplay("-" + currentNumberOnDisplay);
+        firstNumber = display.innerHTML;
+        currentOperator = "";
+        isEqualClicked = false;
+    }
+    else if(isOperatorClicked) {
+        firstNumber = display.innerHTML;
+        updateDisplay("-0");
+        operand = "-0";
+        isOperatorClicked = false;
+    }
+    else if(currentNumberOnDisplay == "0") {
+        operand = "-0";
+        updateDisplay("-0");
+    }
+    else if(currentNumberOnDisplay == "-0") {
+        operand = "0";
+        updateDisplay("0");
+    }
+    else {
+        if(currentNumberOnDisplay.includes("-"))
+            operand = currentNumberOnDisplay.replace("-","");
+        else
+            operand = "-" + currentNumberOnDisplay;
         updateDisplay(operand);
     }
 });
@@ -120,6 +164,7 @@ operatorButtons.forEach(button => {
         }
         operand = display.innerHTML;
         isOperatorClicked = true;
+        isOperatorChain= true;
         isEqualClicked = false;
     });
 });
@@ -147,12 +192,14 @@ equalButton.addEventListener("click", () => {
         firstNumber = operate(firstNumber, operand, currentOperator);
     updateDisplay(firstNumber);
     isOperatorClicked = false;
+    isOperatorChain = false;
     isEqualClicked = true;
 });
 
 clearButton.addEventListener("click", () => {
     currentOperator = "";
     isOperatorClicked = false;
+    isOperatorChain = false;
     isEqualClicked = false;
     firstNumber = 0;
     operand = 0;

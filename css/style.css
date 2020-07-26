@@ -99,9 +99,3 @@ button:hover {
     border-radius: 3px;
 }
 
-#padding-div {
-    visibility: hidden;
-    align-self: flex-end;
-    height: 1px;
-}
-

@@ -14,6 +14,7 @@ let firstNumber = 0;
 let operand = 0;
 let zerothNumber = null;
 let zerothOperator = null;
+let disabled = false;
 
 function add(a, b) { return Number(a) + Number(b);}
 
@@ -35,11 +36,18 @@ function operate(a, b, operator) {
 }
 
 function updateDisplay(str) {
+    if(!isFinite(str)) {
+        display.innerHTML = "ERROR";
+        disabled = true;
+        return;
+    }
     display.innerHTML = str;
 }
 
 numberButtons.forEach(button => {
     button.addEventListener("click", (e) => {
+        if(disabled)
+            return;
         const numberThatWasClicked = e.target.innerHTML;
         let currentNumberOnDisplay = display.innerHTML;
         if(isEqualClicked) {
@@ -71,6 +79,8 @@ numberButtons.forEach(button => {
 });
 
 decimalButton.addEventListener("click", () => {
+    if(disabled)
+            return;
     let currentNumberOnDisplay = display.innerHTML;
     if(isEqualClicked) {
         updateDisplay("0.");
@@ -100,6 +110,8 @@ decimalButton.addEventListener("click", () => {
 });
 
 signButton.addEventListener("click", () => {
+    if(disabled)
+            return;
     let currentNumberOnDisplay = display.innerHTML;
     if(isEqualClicked) {
         if(currentNumberOnDisplay.includes("-"))
@@ -134,6 +146,8 @@ signButton.addEventListener("click", () => {
 });
 
 operatorButtons.forEach(button => {
+    if(disabled)
+            return;
     button.addEventListener("click", (e) => {        
         let lastOperator = currentOperator;
         currentOperator = e.target.innerHTML;
@@ -170,6 +184,8 @@ operatorButtons.forEach(button => {
 });
 
 equalButton.addEventListener("click", () => {
+    if(disabled)
+            return;
     let edgeCase = false;
     if(currentOperator == "")
         return;
@@ -205,5 +221,6 @@ clearButton.addEventListener("click", () => {
     operand = 0;
     zerothNumber = null;
     zerothOperator = null;
+    disabled = false;
     updateDisplay(0);
 })

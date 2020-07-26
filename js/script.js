@@ -1,4 +1,5 @@
 const numberButtons = document.querySelectorAll(".number-button");
+const decimalButton = document.querySelector("#decimal-button");
 const operatorButtons = document.querySelectorAll(".operator-button");
 const equalButton = document.querySelector("#equal-button");
 const clearButton = document.querySelector("#clear-button");
@@ -61,6 +62,31 @@ numberButtons.forEach(button => {
             updateDisplay(operand);
         }
     });
+});
+
+decimalButton.addEventListener("click", () => {
+    let currentNumberOnDisplay = display.innerHTML;
+    if(isEqualClicked) {
+        updateDisplay("0.");
+        firstNumber = display.innerHTML;
+        currentOperator = "";
+        isEqualClicked = false;
+    }
+    else if(isOperatorClicked) {
+        firstNumber = display.innerHTML;
+        updateDisplay("0.");
+        operand = "0.";
+        isOperatorClicked = false;
+    }
+    else if(currentNumberOnDisplay == "0") {
+        operand = "0.";
+        updateDisplay(operand);
+        firstNumber = display.innerHTML;
+    }
+    else if(!currentNumberOnDisplay.includes(".")){
+        operand = currentNumberOnDisplay + ".";
+        updateDisplay(operand);
+    }
 });
 
 operatorButtons.forEach(button => {
